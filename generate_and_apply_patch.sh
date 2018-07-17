@@ -32,4 +32,4 @@ sudo cp acpi_override ${BOOT}
 
 # optimistic check for bootloader configuration
 grep -qir acpi_override ${BOOT} || \
-    echo "Don't forget up update your bootloader config."
+    echo "Don't forget to update your bootloader config."
