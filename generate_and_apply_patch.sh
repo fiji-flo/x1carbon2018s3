@@ -6,7 +6,7 @@ cd /tmp/x1carbon2018s3
 
 
 # extract dsdt
-sudo sh -c 'cat /sys/firmware/acpi/tables/DSDT' > dsdt.dat
+sudo cat /sys/firmware/acpi/tables/DSDT > dsdt.dat
 # decompile
 iasl -d dsdt.dat
 
