@@ -1,10 +1,5 @@
 #!/usr/bin/env bash
-BIOS_REVISION=1.22
 BOOT=${1:-/boot}
-
-sudo dmidecode | grep "BIOS Revision: ${BIOS_REVISION}" \
-    || (echo "This patch only work with BIOS REVISION ${BIOS_REVISION}" \
-             && exit 1)
 
 mkdir -p /tmp/x1carbon2018s3
 cd /tmp/x1carbon2018s3

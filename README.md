@@ -11,7 +11,7 @@ This guide is written for Arch Linux but should work with any distribution out t
 
 ### BIOS version
 
-The current BIOS version for the X1 Carbon 2018 is `1.22`. You can download the update ISO from
+The current BIOS version for the X1 Carbon 2018 is `1.25`. You can download the update ISO from
 the [Lenovo Support Site](https://pcsupport.lenovo.com/de/en/products/LAPTOPS-AND-NETBOOKS/THINKPAD-X-SERIES-LAPTOPS/THINKPAD-X1-CARBON-6TH-GEN-TYPE-20KH-20KG/downloads/DS502282).
 
 
@@ -20,7 +20,7 @@ the [Lenovo Support Site](https://pcsupport.lenovo.com/de/en/products/LAPTOPS-AN
 If you wanna update via USB drive use [geteltorito](https://aur.archlinux.org/packages/geteltorito/).
 
 ```bash
-geteltorito -o x1c2018-122.img bios_g6/n23ur06w.iso
+geteltorito -o x1c2018-122.img n23ur06w.iso
 sudo dd if=x1c2018-122.img of=/dev/sdX bs=512K
 ```
 
