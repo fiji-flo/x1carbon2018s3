@@ -24,7 +24,7 @@ mv dsdt_patched.dsl dsdt.dsl
 
 # compile
 iasl -tc -ve dsdt.dsl
-# genereate override
+# generate override
 mkdir -p kernel/firmware/acpi
 find kernel | cpio -H newc --create > acpi_override
 
