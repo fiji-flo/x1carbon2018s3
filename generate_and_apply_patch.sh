@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
 BOOT=${1:-/boot}
 
-mkdir -p /tmp/x1carbon2018s3
-cd /tmp/x1carbon2018s3
-
+cd `mktemp -d`
 
 # extract dsdt
 sudo cat /sys/firmware/acpi/tables/DSDT > dsdt.dat
