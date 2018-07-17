@@ -26,6 +26,7 @@ mv dsdt_patched.dsl dsdt.dsl
 iasl -tc -ve dsdt.dsl
 # genereate override
 mkdir -p kernel/firmware/acpi
+cp dsdt.aml kernel/firmware/acpi
 find kernel | cpio -H newc --create > acpi_override
 
 # copy override file to boot partition
