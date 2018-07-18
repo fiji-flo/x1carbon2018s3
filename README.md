@@ -61,6 +61,15 @@ initrd		/initramfs-linux.img
 options		root=/dev/nvme0n1p2 rw i915.enable_guc=3 mem_sleep_default=deep
 ```
 
+### Other boot loaders
+
+If you made it work with other boot loaders please help out (PRs are most welcome).
+
+#### Some notes
+
+- `/acpi_override` must be specified before `/initramfs…`.
+- When using a sinlge partiions try using `/boot/acpi_override` instead of `acpi_override`.
+
 ## Verify that it's working
 
 After rebooting check the output of:
