@@ -33,7 +33,18 @@ Make sure that you have `iasl` (via [acpica](https://www.archlinux.org/packages/
 
 ### BIOS settings
 * Set `Thunderbolt BIOS Assist Mode` to `Enabled` (via `Config` → `Thunderbolt 3`).
-* _(Unconfirmed):_ Disable `Secure Boot`
+* _(Unconfirmed):_ Disable `Secure Boot`.
+
+If you see all three lines 
+
+```
+[    0.000000] ACPI: DSDT ACPI table found in initrd [kernel/firmware/acpi/dsdt.aml][0x2338b]
+[    0.000000] Lockdown: ACPI table override is restricted; see man kernel_lockdown.7
+[    0.000000] ACPI: kernel is locked down, ignoring table override
+
+```
+
+rather than just the first line, disable `Secure Boot`
 
 
 ## Generating the override
@@ -68,7 +79,8 @@ If you made it work with other boot loaders please help out (PRs are most welcom
 #### Some notes
 
 - `/acpi_override` must be specified before `/initramfs…`.
-- When using a sinlge partiions try using `/boot/acpi_override` instead of `acpi_override`.
+- When using a single partiion try using `/boot/acpi_override` instead of `acpi_override`.
+  Use the same prefix (if any) used by the existing `/prefix/initramfs-linux.img` parameter.
 
 ## Verify that it's working
 
