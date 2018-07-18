@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 BOOT=${1:-/boot}
-
+IRFS_HOOK="/etc/initramfs-tools/hooks/acpi_override.sh"
 cd `mktemp -d`
 
 # extract dsdt
@@ -28,8 +28,18 @@ cp dsdt.aml kernel/firmware/acpi
 find kernel | cpio -H newc --create > acpi_override
 
 # copy override file to boot partition
-sudo cp acpi_override ${BOOT}
+sudo cp acpi_override ${BOOT} || \
+	{ echo "ERROR: Could not copy acpi_override"; exit $?; }
 
-# optimistic check for bootloader configuration
-grep -qir acpi_override ${BOOT} || \
+# check if we have initramfs and prepend our stuff
+if [ -d $(dirname "${IRFS_HOOK}") ] && [ -x $(which update-initramfs) ]; then
+	sudo bash -c "cat > ${IRFS_HOOK} <<- HOOK
+	#!/bin/sh
+	. /usr/share/initramfs-tools/hook-functions
+	prepend_earlyinitramfs /boot/acpi_override
+	HOOK"
+	sudo chmod +x ${IRFS_HOOK}
+	sudo update-initramfs -u -k all
+else
     echo "Don't forget to update your bootloader config."
+fi
