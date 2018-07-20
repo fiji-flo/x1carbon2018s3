@@ -1,13 +1,14 @@
-# Suspend for the X1 Carbon 2018
+# S3 Suspend for the "Thinkpad X1 Carbon (6th Gen)" on Linux
 
-Unfortunately the X1 Carbon 2018 does not support suspend on Linux. There's an ongoing discussion in
+Unfortunately the ThinkPad X1 Carbon (6th Gen) aka X1C6 does not support suspend on Linux. There's an ongoing discussion in
 the [Lenovo Support Forums](https://forums.lenovo.com/t5/Linux-Discussion/X1-Carbon-Gen-6-cannot-enter-deep-sleep-S3-state-aka-Suspend-to/td-p/3998182).
 With some help from the [Arch Linux Community](https://bbs.archlinux.org/viewtopic.php?id=234913), I was able to create an
 [ACPI override for the DSDT](https://wiki.archlinux.org/index.php/DSDT). This enables full support of S3 suspend on Linux.
 
 ## Prerequisites
 
-This guide is written for Arch Linux but should work with any distribution out there.
+Debian/Ubuntu based distro with initramfs-tools based initramfs generation for fully automated setup.
+But should work with Arch or any other disto + some manual setup.
 
 ### BIOS version
 
