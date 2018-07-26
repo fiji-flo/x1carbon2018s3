@@ -17,7 +17,7 @@ The current BIOS version for the X1C6 is `1.25`. You can download the update ISO
 the [Lenovo Support Site](https://pcsupport.lenovo.com/de/en/products/LAPTOPS-AND-NETBOOKS/THINKPAD-X-SERIES-LAPTOPS/THINKPAD-X1-CARBON-6TH-GEN-TYPE-20KH-20KG/downloads/DS502282).
 
 
-##### BIOS update
+#### BIOS update
 
 If you wanna update via USB drive use [geteltorito](https://aur.archlinux.org/packages/geteltorito/).
 
