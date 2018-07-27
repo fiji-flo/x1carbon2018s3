@@ -4,13 +4,25 @@ set -o pipefail
 
 BOOT=${1:-/boot}
 IRFS_HOOK="/etc/initramfs-tools/hooks/acpi_override.sh"
+OSID=$(grep ID= /etc/os-release | cut -d '=' -f2)
 cd `mktemp -d`
 
-# Make sure we have required tools on systems with apt
-if [ -x $(which apt-get) ]; then
-	echo "[*] Installing required tools"
-	sudo apt-get -y install acpica-tools cpio
-fi
+# Make sure we have required tools on systems
+case $OSID in
+	debian)
+		if [ -x $(which apt-get) ]; then
+			echo "[*] Installing required tools"
+			sudo apt-get -y install acpica-tools cpio
+		fi
+		;;
+	arch)
+		sudo pacman -S --needed acpica cpio
+		;;
+	*)
+		echo "Unknown operating system, please make sure acpica and cpio are installed and press enter"
+		read
+		;;
+esac
 
 # extract dsdt
 echo "[*] Dumping DSDT"
@@ -42,20 +54,37 @@ cp dsdt.aml kernel/firmware/acpi
 find kernel | cpio -H newc --create > acpi_override
 
 # copy override file to boot partition
-sudo cp acpi_override ${BOOT} || \
-	{ echo "ERROR: Could not copy acpi_override"; exit $?; }
+sudo cp acpi_override ${BOOT}/acpi_override.img || \
+	{ echo "ERROR: Could not copy acpi_override.img"; exit $?; }
 
-# check if we have initramfs and prepend our stuff
-if [ -d $(dirname "${IRFS_HOOK}") ] && [ -x $(which update-initramfs) ]; then
-	echo "[*] Adding hook to initramfs"
-	sudo bash -c "cat > ${IRFS_HOOK} <<- HOOK
-	#!/bin/sh
-	. /usr/share/initramfs-tools/hook-functions
-	prepend_earlyinitramfs /boot/acpi_override
-	HOOK"
-	sudo chmod +x ${IRFS_HOOK}
-	sudo update-initramfs -u -k all
-	echo "[*] Done!"
-else
-    echo "Done! Don't forget to update your bootloader config."
-fi
+
+case $OSID in
+	debian)
+		# check if we have initramfs and prepend our stuff
+		if [ -d $(dirname "${IRFS_HOOK}") ] && [ -x $(which update-initramfs) ]; then
+			echo "[*] Adding hook to initramfs"
+			sudo bash -c "cat > ${IRFS_HOOK} <<- HOOK
+			#!/bin/sh
+			. /usr/share/initramfs-tools/hook-functions
+			prepend_earlyinitramfs /boot/acpi_override.img
+			HOOK"
+			sudo chmod +x ${IRFS_HOOK}
+			sudo update-initramfs -u -k all
+			echo "[*] Done!"
+		else
+			echo ""
+			echo " :: Done! Don't forget to update your bootloader config."
+		fi
+		;;
+	arch)
+		echo ""
+		echo " :: Done! ACPI override is found at ${BOOT}/acpi_override.img."
+		echo " :: Make sure you add it to your bootloader config prior to the system initramfs."
+		echo " :: In doubt refer to https://wiki.archlinux.org/index.php/Microcode and treat acpi_override.img like intel-ucode.img."
+		;;
+	*)
+		echo ""
+		echo " :: Done! ACPI override is found at ${BOOT}/acpi_override.img."
+		echo " :: Make sure you add it to your bootloader config prior to the system initramfs."
+		;;
+esac
