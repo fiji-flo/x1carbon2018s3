@@ -32,7 +32,7 @@ Reboot from USB and follow instructions.
 * Set `Thunderbolt BIOS Assist Mode` to `Enabled` (via `Config` → `Thunderbolt 3`).
 * _(Unconfirmed):_ Disable `Secure Boot`.
 
-If you see all three lines 
+If you see all three lines in `dmesg | grep -A3 'DSDT ACPI'`
 
 ```
 [    0.000000] ACPI: DSDT ACPI table found in initrd [kernel/firmware/acpi/dsdt.aml][0x2338b]
