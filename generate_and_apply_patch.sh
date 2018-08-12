@@ -10,15 +10,17 @@ cd `mktemp -d`
 # Make sure we have required tools on systems
 case $OSID in
 	debian)
-		if [ -x $(which apt-get) ]; then
-			echo "[*] Installing required tools"
-			sudo apt-get -y install acpica-tools cpio
-		fi
+		acpi_override_target_name='acpi_override'
+		echo "[*] Installing required tools"
+		sudo apt-get -y install acpica-tools cpio
 		;;
 	arch)
+		acpi_override_target_name='acpi_override.img'
+		echo "[*] Installing required tools"
 		sudo pacman -S --needed acpica cpio
 		;;
 	*)
+		acpi_override_target_name='acpi_override.img'
 		echo "Unknown operating system, please make sure acpica and cpio are installed and press enter"
 		read
 		;;
@@ -54,8 +56,8 @@ cp dsdt.aml kernel/firmware/acpi
 find kernel | cpio -H newc --create > acpi_override
 
 # copy override file to boot partition
-sudo cp acpi_override ${BOOT}/acpi_override.img || \
-	{ echo "ERROR: Could not copy acpi_override.img"; exit $?; }
+sudo cp acpi_override ${BOOT}/${acpi_override_target_name} || \
+	{ echo "ERROR: Could not copy ${acpi_override_target_name}"; exit $?; }
 
 
 case $OSID in
@@ -66,7 +68,7 @@ case $OSID in
 			sudo bash -c "cat > ${IRFS_HOOK} <<- HOOK
 			#!/bin/sh
 			. /usr/share/initramfs-tools/hook-functions
-			prepend_earlyinitramfs /boot/acpi_override.img
+			prepend_earlyinitramfs /boot/acpi_override
 			HOOK"
 			sudo chmod +x ${IRFS_HOOK}
 			sudo update-initramfs -u -k all
@@ -78,13 +80,14 @@ case $OSID in
 		;;
 	arch)
 		echo ""
-		echo " :: Done! ACPI override is found at ${BOOT}/acpi_override.img."
+		echo " :: Done! ACPI override can be found at ${BOOT}/${acpi_override_target_name}."
 		echo " :: Make sure you add it to your bootloader config prior to the system initramfs."
 		echo " :: In doubt refer to https://wiki.archlinux.org/index.php/Microcode and treat acpi_override.img like intel-ucode.img."
 		;;
 	*)
 		echo ""
-		echo " :: Done! ACPI override is found at ${BOOT}/acpi_override.img."
+		echo " :: Done! ACPI override can be found at ${BOOT}/${acpi_override_target_name}."
 		echo " :: Make sure you add it to your bootloader config prior to the system initramfs."
 		;;
 esac
+
