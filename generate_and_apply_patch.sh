@@ -5,6 +5,22 @@ set -o pipefail
 BOOT=${1:-/boot}
 IRFS_HOOK="/etc/initramfs-tools/hooks/acpi_override.sh"
 cd `mktemp -d`
+IASL="iasl"
+if [ "$(iasl -v | grep -c 20180810)" -eq 0 ]; then
+ #Build a newer version of iasl
+ if [ -x $(which apt-get) ]; then
+     echo "[*] Installing required tools to build iasl"
+     sudo apt-get -y install bison flex
+ fi
+ echo "[*] Upgrading IASL..."
+ wget https://acpica.org/sites/acpica/files/acpica-unix2-20180810.tar.gz
+ tar -zxf acpica-unix2-20180810.tar.gz
+ cd acpica-unix2-20180810
+ make clean
+ make iasl || { echo 'ERROR: Failed to build IASL' ; exit 1; }
+ IASL="`pwd`/generate/unix/iasl/obj/iasl"
+ cd ..
+fi
 
 if [ "$(iasl -v | grep -c 20180811)" -eq 0 ]; then
  #Build a newer version of iasl
@@ -35,7 +51,7 @@ sudo cat /sys/firmware/acpi/tables/DSDT > dsdt.dat
 
 # decompile
 echo "[*] Decompiling DSDT"
-iasl -d dsdt.dat
+$IASL -d dsdt.dat
 cp dsdt.dsl dsdt.dsl.orig
 echo "[*] Patching DSDT"
 cat dsdt.dsl |
@@ -50,7 +66,7 @@ mv dsdt_patched.dsl dsdt.dsl
 
 # compile
 echo "[*] Compiling DSDT"
-iasl -tc -ve dsdt.dsl
+$IASL -tc -ve dsdt.dsl
 
 # generate override
 echo "[*] Generating acpi_override"
