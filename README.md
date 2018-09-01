@@ -77,6 +77,18 @@ options		root=/dev/nvme0n1p2 rw i915.enable_guc=3 mem_sleep_default=deep
 
 ### Other boot loaders
 
+- on [`Grub2`](https://wiki.archlinux.org/index.php/GRUB), your `/boot/grub/grub.conf` might look like this:
+
+```text
+menuentry 'Manjaro Linux' ...<blah blah>... {
+        ...<blah blah>...
+        echo    'Loading Linux 4.14.66-1-MANJARO x64 ...'
+        linux   /boot/vmlinuz-4.14-x86_64 root=UUID=<UUID> rw  quiet resume=<UUID>
+        echo    'Loading initial ramdisk ...'
+        initrd  /boot/intel-ucode.img /boot/acpi_override /boot/initramfs-4.14-x86_64.img
+}
+```
+
 If you made it work with other boot loaders please help out (PRs are most welcome).
 
 #### Some notes
