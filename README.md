@@ -5,6 +5,13 @@ and also available via [Lenovo Support Site](https://pcsupport.lenovo.com/us/en/
 
 After flashing you will need to enable it under Setup -> Config -> Power then select Linux.
 
+
+But don't forget to reverse this scripts effects and manual changes in grub before rebooting.
+
+```bash
+# remove the patch
+rm /boot/acpi_override /etc/initramfs-tools/hooks/acpi_override.sh
+```
 Many modern distros automatically install the updates from LVFS but you can check manually via:
 
 ```bash
