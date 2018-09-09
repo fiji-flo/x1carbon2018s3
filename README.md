@@ -1,4 +1,43 @@
-# Suspend for the "Thinkpad X1 Carbon (6th Gen)" on Linux
+# Discontinued; fixed by Lenovo in new firmware release
+
+Lenovo released a new firmware 1.30 which is available on [LVFS](https://fwupd.org/lvfs/component/1023/all)
+and also available via [Lenovo Support Site](https://pcsupport.lenovo.com/us/en/products/LAPTOPS-AND-NETBOOKS/THINKPAD-X-SERIES-LAPTOPS/THINKPAD-X1-CARBON-6TH-GEN-TYPE-20KH-20KG/downloads/DS502282)
+
+After flashing you will need to enable it under Setup -> Config -> Power then select Linux.
+
+
+But don't forget to reverse this scripts effects and manual changes in grub before rebooting.
+
+```bash
+# remove the patch
+rm /boot/acpi_override /etc/initramfs-tools/hooks/acpi_override.sh
+```
+Many modern distros automatically install the updates from LVFS but you can check manually via:
+
+```bash
+If you have a device with firmware supported by fwupd, this is how you will check for updates and apply them using fwupd's command line tools.
+
+# fwupdmgr get-devices
+
+This will display all devices detected by fwupd.
+
+# fwupdmgr refresh
+
+This will download the latest metadata from LVFS.
+
+# fwupdmgr get-updates
+
+If updates are available for any devices on the system, they'll be displayed.
+
+# fwupdmgr update
+
+This will download and apply all updates for your system.
+
+    Updates that can be applied live will be done immediately.
+    Updates that run at bootup will be staged for the next reboot.
+```
+
+## Suspend for the "Thinkpad X1 Carbon (6th Gen)" on Linux
 
 Unfortunately the ThinkPad X1 Carbon (6th Gen) aka (X1C6 and X1 Carbon 2018) does not support suspend on Linux. There's an ongoing discussion in
 the [Lenovo Support Forums](https://forums.lenovo.com/t5/Linux-Discussion/X1-Carbon-Gen-6-cannot-enter-deep-sleep-S3-state-aka-Suspend-to/td-p/3998182).
