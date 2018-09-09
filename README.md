@@ -22,8 +22,9 @@ rm /etc/initramfs-tools/hooks/acpi_override.sh
 
 Many modern distros automatically install the updates from LVFS but you can check manually via:
 
-```bash
 If you have a device with firmware supported by fwupd, this is how you will check for updates and apply them using fwupd's command line tools.
+
+```bash
 
 # fwupdmgr get-devices
 
