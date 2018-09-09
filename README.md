@@ -3,15 +3,23 @@
 Lenovo released a new firmware 1.30 which is available on [LVFS](https://fwupd.org/lvfs/component/1023/all)
 and also available via [Lenovo Support Site](https://pcsupport.lenovo.com/us/en/products/LAPTOPS-AND-NETBOOKS/THINKPAD-X-SERIES-LAPTOPS/THINKPAD-X1-CARBON-6TH-GEN-TYPE-20KH-20KG/downloads/DS502282)
 
-After flashing you will need to enable it under Setup -> Config -> Power then select Linux.
+After flashing you will need to enable it under Setup → Config → Power then select Linux.
 
 
-But don't forget to reverse this scripts effects and manual changes in grub before rebooting.
+**But don't forget** to reverse this scripts effects and manual changes in your [bootloader config](#loading-the-override-on-boot) before rebooting.
 
 ```bash
 # remove the patch
-rm /boot/acpi_override /etc/initramfs-tools/hooks/acpi_override.sh
+rm /boot/acpi_override
+
+# on ubuntu / debian based system
+rm /etc/initramfs-tools/hooks/acpi_override.sh
 ```
+
+## BIOS Update
+
+### Via LVFS
+
 Many modern distros automatically install the updates from LVFS but you can check manually via:
 
 ```bash
@@ -37,7 +45,25 @@ This will download and apply all updates for your system.
     Updates that run at bootup will be staged for the next reboot.
 ```
 
-## Suspend for the "Thinkpad X1 Carbon (6th Gen)" on Linux
+### Manual
+
+You can manually check your BIOS version like this:
+
+```bash
+sudo dmidecode | grep "BIOS Revision:"
+```
+
+To update your BIOS via USB drive use [geteltorito](https://aur.archlinux.org/packages/geteltorito/).
+
+```bash
+curl -O https://download.lenovo.com/pccbbs/mobiles/n23ur11w.iso
+geteltorito -o x1c2018-130.img n23ur11w.iso
+sudo dd if=x1c2018-130.img of=/dev/sdX bs=512K
+```
+
+---
+
+## (OUTDATED) Suspend for the "Thinkpad X1 Carbon (6th Gen)" on Linux
 
 Unfortunately the ThinkPad X1 Carbon (6th Gen) aka (X1C6 and X1 Carbon 2018) does not support suspend on Linux. There's an ongoing discussion in
 the [Lenovo Support Forums](https://forums.lenovo.com/t5/Linux-Discussion/X1-Carbon-Gen-6-cannot-enter-deep-sleep-S3-state-aka-Suspend-to/td-p/3998182).
