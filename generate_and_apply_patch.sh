@@ -7,10 +7,18 @@ IRFS_HOOK="/etc/initramfs-tools/hooks/acpi_override.sh"
 cd `mktemp -d`
 
 # Make sure we have required tools on systems with apt
-if [ -x $(which apt-get) ]; then
+if [ -x "$(command -v apt-get)" ]; then
+	
 	echo "[*] Installing required tools"
 	sudo apt-get -y install acpica-tools cpio
+
+# Make sure we have required tools on systems with pacman
+elif [ -x "$(command -v pacman)" ]; then
+	echo "[*] Installing required tools"
+	sudo pacman --noconfirm -S acpica cpio
+
 fi
+
 
 # extract dsdt
 echo "[*] Dumping DSDT"
