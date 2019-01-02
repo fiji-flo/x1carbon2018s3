@@ -1,10 +1,9 @@
-# Discontinued; fixed by Lenovo in new firmware release
+# X1 Carbon 6th Discontinued; fixed by Lenovo in new firmware release
 
 Lenovo released a new firmware 1.30 which is available on [LVFS](https://fwupd.org/lvfs/component/1023/all)
 and also available via [Lenovo Support Site](https://pcsupport.lenovo.com/us/en/products/LAPTOPS-AND-NETBOOKS/THINKPAD-X-SERIES-LAPTOPS/THINKPAD-X1-CARBON-6TH-GEN-TYPE-20KH-20KG/downloads/DS502282)
 
 After flashing you will need to enable it under Setup → Config → Power then select Linux.
-
 
 **But don't forget** to reverse this scripts effects and manual changes in your [bootloader config](#loading-the-override-on-boot) before rebooting.
 
@@ -64,9 +63,9 @@ sudo dd if=x1c2018-130.img of=/dev/sdX bs=512K
 
 ---
 
-## (OUTDATED) Suspend for the "Thinkpad X1 Carbon (6th Gen)" on Linux
+## Suspend for the "Thinkpad X1 Yoga (3rd Gen)" on Linux (previously also X1 Carbon 6th Gen)
 
-Unfortunately the ThinkPad X1 Carbon (6th Gen) aka (X1C6 and X1 Carbon 2018) does not support suspend on Linux. There's an ongoing discussion in
+Unfortunately the ThinkPad X1 Yoga (3rd Gen) aka (X1Y3 and X1 Yoga 2018) does not support suspend on Linux. There's an ongoing discussion in
 the [Lenovo Support Forums](https://forums.lenovo.com/t5/Linux-Discussion/X1-Carbon-Gen-6-cannot-enter-deep-sleep-S3-state-aka-Suspend-to/td-p/3998182).
 With some help from the [Arch Linux Community](https://bbs.archlinux.org/viewtopic.php?id=234913), I was able to create an
 [ACPI override for the DSDT](https://wiki.archlinux.org/index.php/DSDT). This enables full support of S3 suspend on Linux.
@@ -76,27 +75,12 @@ With some help from the [Arch Linux Community](https://bbs.archlinux.org/viewtop
 Debian/Ubuntu based distro with initramfs-tools based initramfs generation for fully automated setup apart from the BIOS related things.
 
 For other distros there are some further steps needed. (PRs welcome)
-
-### (Optional) BIOS version
-
-The current BIOS version for the X1C6 is `1.25`. You can download the update ISO from
-the [Lenovo Support Site](https://pcsupport.lenovo.com/de/en/products/LAPTOPS-AND-NETBOOKS/THINKPAD-X-SERIES-LAPTOPS/THINKPAD-X1-CARBON-6TH-GEN-TYPE-20KH-20KG/downloads/DS502282).
-
-
-#### BIOS update
-
-If you wanna update via USB drive use [geteltorito](https://aur.archlinux.org/packages/geteltorito/).
-
-```bash
-geteltorito -o x1c2018-125.img n23ur08w.iso
-sudo dd if=x1c2018-125.img of=/dev/sdX bs=512K
-```
-
 Reboot from USB and follow instructions.
 
 ### BIOS settings
+* Ensure that `Boot Mode` is set to `Quick` and not `Diagnostic`
 * Set `Thunderbolt BIOS Assist Mode` to `Enabled` (via `Config` → `Thunderbolt 3`).
-* _(Unconfirmed):_ Disable `Secure Boot`.
+* Disable `Secure Boot`.
 
 If you see all three lines in `dmesg | grep -A3 'DSDT ACPI'`
 
@@ -139,6 +123,21 @@ initrd		/intel-ucode.img
 initrd		/acpi_override
 initrd		/initramfs-linux.img
 options		root=/dev/nvme0n1p2 rw i915.enable_guc=3 mem_sleep_default=deep
+```
+
+If you're using [grub](https://wiki.archlinux.org/index.php/GRUB) edit `/etc/default/grub`
+and add the following:
+
+```
+GRUB_EARLY_INITRD_LINUX_CUSTOM=acpi_override
+GRUB_CMDLINE_LINUX_DEFAULT="quiet mem_sleep_default=deep"
+```
+
+Then run `sudo update-grub`. To verify the setting has been applied correctly run
+`sudo cat /boot/grub/grub.cfg | grep initrd` and you should see:
+
+```
+initrd  /boot/intel-ucode.img /boot/acpi_override /boot/initramfs-4.19-x86_64.img
 ```
 
 ### Other boot loaders
